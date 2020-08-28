@@ -27,6 +27,14 @@
   zlib = require('zlib');
 
   module.exports = PNG = (function() {
+    PNG.setWarn = function(fn) {
+      return this.warn = fn;
+    };
+
+    PNG.warn = function(warning) {
+      console.error("Should have set warn function for png-node");
+      return console.error(warning);
+    };
 
     PNG.decode = function(path, fn) {
       return fs.readFile(path, function(err, file) {
@@ -232,7 +240,8 @@
               }
               break;
             default:
-              throw new Error("Invalid filter algorithm: " + data[pos - 1]);
+              PNG.warn("PNG uses invalid filter algorithm: " + data[pos - 1]);
+              return fn(pixels);
           }
           row++;
         }
